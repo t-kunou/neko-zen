@@ -1,0 +1,11 @@
+version: '3'
+services:
+  neko-zen:
+    build: .
+    image: node-express-dev:1.0
+    container_name: neko-can
+    tty: true
+    volumes:
+      - ../app:/app
+    ports:
+      - "8080:2525"

@@ -1,0 +1,113 @@
+extends layout
+
+block content
+  h1= title
+  p(id='message') 検出中……
+  div(style='')
+    video(id='preview', autoplay, height=540, width=960, style='display: block;')
+    p(id='nose', style='position: relative; color: red; display: none; height: 0px; margin: 0px;') ●
+    p(id='left-eye', style='position: relative; color: red; display: none; height: 0px; margin: 0px;') ●
+    p(id='right-eye', style='position: relative; color: red; display: none; height: 0px; margin: 0px;') ●
+    p(id='left-shoulder', style='position: relative; color: red; display: none; height: 0px; margin: 0px;') ●
+    p(id='right-shoulder', style='position: relative; color: red; display: none; height: 0px; margin: 0px;') ●
+  select(id='camera_select', style='margin-top: 20px')
+
+  script.
+    setVideoSource('video#preview', 'select');
+    const imageScaleFactor = 0.5;
+    const outputStride = 16;
+    const flipHorizontal = false;
+    const videoElement = document.getElementById('preview');
+    const noseMarkElement = document.getElementById('nose');
+
+    const Marker = function(id, partName) {
+      this.element = document.getElementById(id);
+      this.partName = partName;
+    }
+    
+    Marker.prototype = {
+      do: function(pose) {
+        const part = pose.keypoints.find((element) => { return element.part === this.partName });
+
+        const x = part.position.x;
+        const y = part.position.y;
+
+        console.log(this.partName + ':' + x + ',' + 'y');
+        
+        this.element.style.display = 'block';
+        this.element.style.top = '-' + (540 - y) + 'px';
+        this.element.style.left = x + 'px';
+      }
+    }
+
+    const CheckPose = function(videoElement, imageScaleFactor, flipHorizontal, outputStride, hooks) {
+      this.videoElement = videoElement;
+      this.imageScaleFactor = imageScaleFactor;
+      this.flipHorizontal = flipHorizontal;
+      this.outputStride = outputStride;
+      this.net = null;
+      this.hooks = hooks; 
+    }
+
+    CheckPose.prototype = {
+      init: function () {
+        console.log('---init start---')
+        posenet.load().then(function(net){
+          this.net = net;
+        }.bind(this))
+        console.log('---init end---')
+      },
+      start: async function () {
+        setInterval(async function(){
+          if (!this.net) {
+            console.log('Waiting init end...');
+            return;
+          }
+
+          const poses = await this.net.estimateMultiplePoses(videoElement, imageScaleFactor, flipHorizontal, outputStride);
+          const pose = poses[0];
+          console.log(pose)
+
+          this.hooks.forEach((hook) => {
+            console.log(hook);
+            hook.do(pose);
+          })
+
+        }.bind(this), 3000);
+      }
+    }
+
+    const SholderChecker = function(id) {
+      this.element = document.getElementById(id);
+    }
+    SholderChecker.prototype = {
+      do: function(pose) {
+        const leftShoulder = pose.keypoints.find((element) => { return element.part === 'leftShoulder' });
+        const rightShoulder = pose.keypoints.find((element) => { return element.part === 'rightShoulder' });
+
+        var diff = leftShoulder.position.y - rightShoulder.position.y;
+        if (diff > 10) {
+          this.element.innerHTML = '左肩が下がっています';
+        } else if (diff < -10) {
+          this.element.innerHTML = '右肩が下がっています';
+        } else {
+          this.element.innerHTML = '';
+        }
+      }
+    }
+
+    const sholderChecker = new SholderChecker('message');
+
+    hooks = [
+      new Marker('nose', 'nose'),
+      new Marker('left-eye', 'leftEye'),
+      new Marker('right-eye', 'rightEye'),
+      new Marker('left-shoulder', 'leftShoulder'),
+      new Marker('right-shoulder', 'rightShoulder'),
+      sholderChecker
+    ]
+    
+    const checkPose = new CheckPose(videoElement, imageScaleFactor, flipHorizontal, outputStride, hooks);
+    checkPose.init();
+    checkPose.start();
+  
