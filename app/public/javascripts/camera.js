@@ -10,8 +10,7 @@ async function setVideoSource(video, selector) {
       start();
   
       function gotDevices(deviceInfos) {
-        for (let i = 0; i !== deviceInfos.length; ++i) {
-          const deviceInfo = deviceInfos[i];
+        deviceInfos.forEach((deviceInfo) => {
           const option = document.createElement('option');
           option.value = deviceInfo.deviceId;
           if (deviceInfo.kind === 'videoinput') {
@@ -20,11 +19,10 @@ async function setVideoSource(video, selector) {
           } else {
             console.log('Some other kind of source/device: ', deviceInfo);
           }
-        }
+        });
       }
       
       function gotStream(stream) {
-        window.stream = stream; // make stream available to console
         videoElement.srcObject = stream;
         return navigator.mediaDevices.enumerateDevices();
       }
