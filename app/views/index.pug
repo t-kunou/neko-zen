@@ -16,66 +16,9 @@ block content
     setVideoSource('video#preview', 'select');
     const imageScaleFactor = 0.5;
     const outputStride = 16;
+    const interval = 200;
     const flipHorizontal = false;
     const videoElement = document.getElementById('preview');
-    const noseMarkElement = document.getElementById('nose');
-
-    const Marker = function(id, partName) {
-      this.element = document.getElementById(id);
-      this.partName = partName;
-    }
-    
-    Marker.prototype = {
-      do: function(pose) {
-        const part = pose.keypoints.find((element) => { return element.part === this.partName });
-
-        const x = part.position.x;
-        const y = part.position.y;
-
-        console.log(this.partName + ':' + x + ',' + 'y');
-        
-        this.element.style.display = 'block';
-        this.element.style.top = '-' + (540 - y) + 'px';
-        this.element.style.left = x + 'px';
-      }
-    }
-
-    const CheckPose = function(videoElement, imageScaleFactor, flipHorizontal, outputStride, hooks) {
-      this.videoElement = videoElement;
-      this.imageScaleFactor = imageScaleFactor;
-      this.flipHorizontal = flipHorizontal;
-      this.outputStride = outputStride;
-      this.net = null;
-      this.hooks = hooks; 
-    }
-
-    CheckPose.prototype = {
-      init: function () {
-        console.log('---init start---')
-        posenet.load().then(function(net){
-          this.net = net;
-        }.bind(this))
-        console.log('---init end---')
-      },
-      start: async function () {
-        setInterval(async function(){
-          if (!this.net) {
-            console.log('Waiting init end...');
-            return;
-          }
-
-          const poses = await this.net.estimateMultiplePoses(videoElement, imageScaleFactor, flipHorizontal, outputStride);
-          const pose = poses[0];
-          console.log(pose)
-
-          this.hooks.forEach((hook) => {
-            console.log(hook);
-            hook.do(pose);
-          })
-
-        }.bind(this), 3000);
-      }
-    }
 
     const SholderChecker = function(id) {
       this.element = document.getElementById(id);
@@ -96,7 +39,9 @@ block content
       }
     }
 
-    const sholderChecker = new SholderChecker('message');
+    filters = [
+      new SholderChecker('message')
+    ]
 
     hooks = [
       new Marker('nose', 'nose'),
@@ -104,10 +49,9 @@ block content
       new Marker('right-eye', 'rightEye'),
       new Marker('left-shoulder', 'leftShoulder'),
       new Marker('right-shoulder', 'rightShoulder'),
-      sholderChecker
     ]
     
-    const checkPose = new CheckPose(videoElement, imageScaleFactor, flipHorizontal, outputStride, hooks);
-    checkPose.init();
-    checkPose.start();
+    const poseChecker = new PoseChecker(videoElement, imageScaleFactor, flipHorizontal, outputStride, interval, filters, hooks);
+    poseChecker.init();
+    poseChecker.start();
   
