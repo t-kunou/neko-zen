@@ -10,10 +10,10 @@ Marker.prototype = {
     const x = part.position.x;
     const y = part.position.y;
 
-    console.log(this.partName + ':' + x + ',' + 'y');
+    console.log(this.partName + ':' + x + ',' + y);
     
     this.element.style.display = 'block';
-    this.element.style.top = '-' + (540 - y) + 'px';
-    this.element.style.left = x + 'px';
+    this.element.style.top = -1 * (540 - y) + 'px';
+    this.element.style.left = (960 - x) + 'px';
   }
 }
