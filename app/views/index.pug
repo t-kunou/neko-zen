@@ -2,9 +2,9 @@ extends layout
 
 block content
   h1= title
-  p(id='message') 検出中……
-  div(style='')
-    video(id='preview', autoplay, height=540, width=960, style='display: block;')
+  p(id='message', style='height: 30px') 検出中……
+  div(style='width: 960px')
+    video(id='preview', autoplay, height=540, width=960, style='display: block; transform: scale(-1, 1);')
     p(id='nose', style='position: relative; color: red; display: none; height: 0px; margin: 0px;') ●
     p(id='left-eye', style='position: relative; color: red; display: none; height: 0px; margin: 0px;') ●
     p(id='right-eye', style='position: relative; color: red; display: none; height: 0px; margin: 0px;') ●
@@ -19,25 +19,6 @@ block content
     const interval = 200;
     const flipHorizontal = false;
     const videoElement = document.getElementById('preview');
-
-    const SholderChecker = function(id) {
-      this.element = document.getElementById(id);
-    }
-    SholderChecker.prototype = {
-      do: function(pose) {
-        const leftShoulder = pose.keypoints.find((element) => { return element.part === 'leftShoulder' });
-        const rightShoulder = pose.keypoints.find((element) => { return element.part === 'rightShoulder' });
-
-        var diff = leftShoulder.position.y - rightShoulder.position.y;
-        if (diff > 10) {
-          this.element.innerHTML = '左肩が下がっています';
-        } else if (diff < -10) {
-          this.element.innerHTML = '右肩が下がっています';
-        } else {
-          this.element.innerHTML = '';
-        }
-      }
-    }
 
     filters = [
       new SholderChecker('message')
