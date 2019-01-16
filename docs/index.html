@@ -17,14 +17,13 @@
     <p id="message" style="height: 30px"></p>
     <div style="width: 960px">
       <video id="preview" autoplay="" height="540" width="960" style="display: block; transform: scale(-1, 1);"></video>
-      <p id="nose" style="position: relative; color: red; display: block; height: 0px; margin: 0px; top: -223.286px; left: 443.902px;">●</p>
-      <p id="left-eye" style="position: relative; color: red; display: block; height: 0px; margin: 0px; top: -266.11px; left: 396.135px;">●</p>
-      <p id="right-eye" style="position: relative; color: red; display: block; height: 0px; margin: 0px; top: -263.901px; left: 491.31px;">●</p>
-      <p id="left-shoulder" style="position: relative; color: red; display: block; height: 0px; margin: 0px; top: -56.1669px; left: 270.734px;">●</p>
-      <p id="right-shoulder" style="position: relative; color: red; display: block; height: 0px; margin: 0px; top: -53.6037px; left: 634.728px;">●</p>
+      <p id="nose" style="position: relative; color: red; display: none; height: 0px; margin: 0px;">●</p>
+      <p id="left-eye" style="position: relative; color: red; display: none; height: 0px; margin: 0px;">●</p>
+      <p id="right-eye" style="position: relative; color: red; display: none; height: 0px; margin: 0px;">●</p>
+      <p id="left-shoulder" style="position: relative; color: red; display: none; height: 0px; margin: 0px;">●</p>
+      <p id="right-shoulder" style="position: relative; color: red; display: none; height: 0px; margin: 0px;">●</p>
     </div>
     <select id="camera_select" style="margin-top: 20px">
-      <option value="4aceefa5712fb1fea4968ee9554e7a47792237a401d5dddafef74d5b50299a48">FaceTime HD Camera</option>
     </select>
     <script>
       setVideoSource('video#preview', 'select');
