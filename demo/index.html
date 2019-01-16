@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet@0.2.3"></script>
+    <script src="./posenet@0.2.3"></script>
+    <script src="./camera.js"></script>
+    <script src="./marker.js"></script>
+    <script src="./pose_checker.js"></script>
+    <script src="./shoulder_checker.js"></script>
+    <title>Neko-Zen</title>
+    <link rel="stylesheet" href="./Neko-Zen_files/style.css">
+  </head>
+  <body>
+    <h1>Neko-Zen</h1>
+    <p id="message" style="height: 30px"></p>
+    <div style="width: 960px">
+      <video id="preview" autoplay="" height="540" width="960" style="display: block; transform: scale(-1, 1);"></video>
+      <p id="nose" style="position: relative; color: red; display: block; height: 0px; margin: 0px; top: -223.286px; left: 443.902px;">●</p>
+      <p id="left-eye" style="position: relative; color: red; display: block; height: 0px; margin: 0px; top: -266.11px; left: 396.135px;">●</p>
+      <p id="right-eye" style="position: relative; color: red; display: block; height: 0px; margin: 0px; top: -263.901px; left: 491.31px;">●</p>
+      <p id="left-shoulder" style="position: relative; color: red; display: block; height: 0px; margin: 0px; top: -56.1669px; left: 270.734px;">●</p>
+      <p id="right-shoulder" style="position: relative; color: red; display: block; height: 0px; margin: 0px; top: -53.6037px; left: 634.728px;">●</p>
+    </div>
+    <select id="camera_select" style="margin-top: 20px">
+      <option value="4aceefa5712fb1fea4968ee9554e7a47792237a401d5dddafef74d5b50299a48">FaceTime HD Camera</option>
+    </select>
+    <script>
+      setVideoSource('video#preview', 'select');
+      const imageScaleFactor = 0.5;
+      const outputStride = 16;
+      const interval = 200;
+      const flipHorizontal = false;
+      const videoElement = document.getElementById('preview');
+
+      filters = [
+        new SholderChecker('message')
+      ]
+
+      hooks = [
+        new Marker('nose', 'nose'),
+        new Marker('left-eye', 'leftEye'),
+        new Marker('right-eye', 'rightEye'),
+        new Marker('left-shoulder', 'leftShoulder'),
+        new Marker('right-shoulder', 'rightShoulder'),
+      ]
+
+      const poseChecker = new PoseChecker(videoElement, imageScaleFactor, flipHorizontal, outputStride, interval, filters, hooks);
+      poseChecker.init();
+      poseChecker.start();
+    </script>
+  </body>
+</html>
+
