@@ -1,6 +1,7 @@
-const PointMarker = function(context, partName) {
+const PointMarker = function(context, partName, color) {
   this.context = context;
   this.partName = partName;
+  this.color = color;
 }
 
 PointMarker.prototype = {
@@ -13,9 +14,7 @@ PointMarker.prototype = {
     x = (960 - x);
     y = y;
 
-    console.log(x);
-    console.log(y);
-
+    context.fillStyle = this.color;
     context.fillRect(x, y, 5, 5);
   }
 }

@@ -12,8 +12,6 @@ block content
     p(id='right-elbow', style='position: relative; color: blue; display: none; height: 0px; margin: 0px;') ●
     p(id='right-wrist', style='position: relative; color: blue; display: none; height: 0px; margin: 0px;') ●
   select(id='camera_select', style='margin-top: 20px')
-  // div(style='width: 960px')
-  //  canvas(id='canvas', height=540, width=960)
 
   script.
     setVideoSource('video#preview', 'select');
@@ -30,11 +28,16 @@ block content
     ]
 
     hooks = [
-      new PointMarker(context, 'rightShoulder'),
-      new PointMarker(context, 'rightElbow'),
-      new PointMarker(context, 'rightWrist'),
-      new Liner(context, 'rightShoulder', 'rightElbow'),
-      new Liner(context, 'rightElbow', 'rightWrist')
+      new PointMarker(context, 'rightShoulder', 'rgb(192, 80, 77)'),
+      new PointMarker(context, 'rightElbow', 'rgb(192, 80, 77)'),
+      new PointMarker(context, 'rightWrist', 'rgb(192, 80, 77)'),
+      new Liner(context, 'rightShoulder', 'rightElbow', 'rgb(192, 80, 77)'),
+      new Liner(context, 'rightElbow', 'rightWrist', 'rgb(192, 80, 77)'),
+      new PointMarker(context, 'leftShoulder', 'rgb(80, 77, 192)'),
+      new PointMarker(context, 'leftElbow', 'rgb(80, 77, 192)'),
+      new PointMarker(context, 'leftWrist', 'rgb(80, 77, 192)'),
+      new Liner(context, 'leftShoulder', 'leftElbow', 'rgb(80, 77, 192)'),
+      new Liner(context, 'leftElbow', 'leftWrist', 'rgb(80, 77, 192)')
     ]
 
     const poseChecker = new PoseChecker(videoElement, imageScaleFactor, flipHorizontal, outputStride, interval, filters, hooks);

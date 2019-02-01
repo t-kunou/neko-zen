@@ -1,7 +1,8 @@
-const Liner = function(context, fromPartName, toPartName) {
+const Liner = function(context, fromPartName, toPartName, color) {
   this.context = context;
   this.fromPartName = fromPartName;
   this.toPartName = toPartName;
+  this.color = color;
 }
 
 Liner.prototype = {
@@ -14,6 +15,7 @@ Liner.prototype = {
     var toX = (960 - to.position.x);
     var toY = to.position.y;
 
+    context.strokeStyle = this.color;
     context.beginPath();
     context.moveTo(fromX, fromY);
     context.lineTo(toX, toY);
