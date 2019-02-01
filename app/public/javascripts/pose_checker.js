@@ -5,7 +5,7 @@ const PoseChecker = function(videoElement, imageScaleFactor, flipHorizontal, out
   this.outputStride = outputStride;
   this.interval = interval
   this.filters = filters;
-  this.hooks = hooks; 
+  this.hooks = hooks;
   this.net = null;
 }
 
@@ -27,6 +27,8 @@ PoseChecker.prototype = {
       const poses = await this.net.estimateMultiplePoses(videoElement, imageScaleFactor, flipHorizontal, outputStride);
       const pose = poses[0];
       console.log(pose)
+
+      context.clearRect(0, 0, 960, 540);
 
       this.filters.forEach((filter) => {
         filter.do(pose);
