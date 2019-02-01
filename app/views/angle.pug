@@ -37,7 +37,10 @@ block content
       new PointMarker(context, 'leftElbow', 'rgb(80, 77, 192)'),
       new PointMarker(context, 'leftWrist', 'rgb(80, 77, 192)'),
       new Liner(context, 'leftShoulder', 'leftElbow', 'rgb(80, 77, 192)'),
-      new Liner(context, 'leftElbow', 'leftWrist', 'rgb(80, 77, 192)')
+      new Liner(context, 'leftElbow', 'leftWrist', 'rgb(80, 77, 192)'),
+      new Liner(context, 'leftShoulder', 'rightShoulder', 'rgb(80, 192, 77)'),
+      new ShowAngle(context, 'rightElbow', 'rightWrist', 'rightShoulder', 'rgb(192, 80, 77)'),
+      new ShowAngle(context, 'leftElbow', 'leftShoulder', 'leftWrist', 'rgb(80, 77, 192)')
     ]
 
     const poseChecker = new PoseChecker(videoElement, imageScaleFactor, flipHorizontal, outputStride, interval, filters, hooks);
