@@ -4,24 +4,27 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.3"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet@0.2.3"></script>
-    <script src="./posenet@0.2.3"></script>
     <script src="./camera.js"></script>
     <script src="./marker.js"></script>
+    <script src="./point_marker.js"></script>
     <script src="./pose_checker.js"></script>
+    <script src="./liner.js"></script>
+    <script src="./show_angle.js"></script>
     <script src="./shoulder_checker.js"></script>
-    <title>Neko-Zen</title>
-    <link rel="stylesheet" href="./style.css">
+    <title>Angle</title>
+    <link rel="stylesheet" href="./angle_files/style.css">
   </head>
   <body>
-    <h1>Neko-Zen</h1>
-    <p id="message" style="height: 30px"></p>
-    <div style="width: 960px">
+    <h1>Angle</h1>
+    <div style="width: 960px; position: relative;">
       <video id="preview" autoplay="" height="540" width="960" style="display: block; transform: scale(-1, 1);"></video>
-      <p id="nose" style="position: relative; color: red; display: none; height: 0px; margin: 0px;">●</p>
-      <p id="left-eye" style="position: relative; color: red; display: none; height: 0px; margin: 0px;">●</p>
-      <p id="right-eye" style="position: relative; color: red; display: none; height: 0px; margin: 0px;">●</p>
+      <canvas id="layer" height="540" width="960" style="position: absolute; top: 0; left: 0;"></canvas>
       <p id="left-shoulder" style="position: relative; color: red; display: none; height: 0px; margin: 0px;">●</p>
-      <p id="right-shoulder" style="position: relative; color: red; display: none; height: 0px; margin: 0px;">●</p>
+      <p id="left-elbow" style="position: relative; color: red; display: none; height: 0px; margin: 0px;">●</p>
+      <p id="left-wrist" style="position: relative; color: red; display: none; height: 0px; margin: 0px;">●</p>
+      <p id="right-shoulder" style="position: relative; color: blue; display: none; height: 0px; margin: 0px;">●</p>
+      <p id="right-elbow" style="position: relative; color: blue; display: none; height: 0px; margin: 0px;">●</p>
+      <p id="right-wrist" style="position: relative; color: blue; display: none; height: 0px; margin: 0px;">●</p>
     </div>
     <select id="camera_select" style="margin-top: 20px">
     </select>
@@ -32,17 +35,27 @@
       const interval = 200;
       const flipHorizontal = false;
       const videoElement = document.getElementById('preview');
+      const canvas = document.getElementById("layer");
+      const context = canvas.getContext("2d");
 
       filters = [
-        new SholderChecker('message')
+        // new SholderChecker('message')
       ]
 
       hooks = [
-        new Marker('nose', 'nose'),
-        new Marker('left-eye', 'leftEye'),
-        new Marker('right-eye', 'rightEye'),
-        new Marker('left-shoulder', 'leftShoulder'),
-        new Marker('right-shoulder', 'rightShoulder'),
+        new PointMarker(context, 'rightShoulder', 'rgb(192, 80, 77)'),
+        new PointMarker(context, 'rightElbow', 'rgb(192, 80, 77)'),
+        new PointMarker(context, 'rightWrist', 'rgb(192, 80, 77)'),
+        new Liner(context, 'rightShoulder', 'rightElbow', 'rgb(192, 80, 77)'),
+        new Liner(context, 'rightElbow', 'rightWrist', 'rgb(192, 80, 77)'),
+        new PointMarker(context, 'leftShoulder', 'rgb(80, 77, 192)'),
+        new PointMarker(context, 'leftElbow', 'rgb(80, 77, 192)'),
+        new PointMarker(context, 'leftWrist', 'rgb(80, 77, 192)'),
+        new Liner(context, 'leftShoulder', 'leftElbow', 'rgb(80, 77, 192)'),
+        new Liner(context, 'leftElbow', 'leftWrist', 'rgb(80, 77, 192)'),
+        new Liner(context, 'leftShoulder', 'rightShoulder', 'rgb(80, 192, 77)'),
+        new ShowAngle(context, 'rightElbow', 'rightWrist', 'rightShoulder', 'rgb(192, 80, 77)'),
+        new ShowAngle(context, 'leftElbow', 'leftShoulder', 'leftWrist', 'rgb(80, 77, 192)')
       ]
 
       const poseChecker = new PoseChecker(videoElement, imageScaleFactor, flipHorizontal, outputStride, interval, filters, hooks);
@@ -51,4 +64,3 @@
     </script>
   </body>
 </html>
-
